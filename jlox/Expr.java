@@ -20,7 +20,9 @@ abstract class Expr {
         }
 
         @Override
-        <R> R accept(Visitor<R> visitor) {return  visitor.visitAssignExpr(this);}
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitAssignExpr(this);
+        }
     }
     static class Binary extends Expr {
         final Expr left;
