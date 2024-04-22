@@ -17,3 +17,11 @@ var c = "global c";
 print a;
 print b;
 print c;
+
+if (a == "global a")
+    print "it is " + a;
+
+if (b == "inner b")
+    print "not this " + b;
+else
+    print "b is not a " + b;
