@@ -25,3 +25,10 @@ if (b == "inner b")
     print "not this " + b;
 else
     print "b is not a " + b;
+
+var d = 0;
+while (d < 5) {
+    print d;
+    d = d + 1;
+    print d;
+}
