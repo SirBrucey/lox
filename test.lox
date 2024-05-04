@@ -99,3 +99,8 @@ print DevonshireCream; // Prints "DevonshireCream".
 class Bagel {}
 var bagel = Bagel();
 print bagel;
+
+// Class properties
+
+bagel.toasted = true;
+print bagel.toasted;
