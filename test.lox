@@ -84,6 +84,8 @@ var a = "global";
   showA();
 }
 
+// Class declaration
+
 class DevonshireCream {
   serveOn() {
     return "Scones";
@@ -91,3 +93,9 @@ class DevonshireCream {
 }
 
 print DevonshireCream; // Prints "DevonshireCream".
+
+// Class instantiation
+
+class Bagel {}
+var bagel = Bagel();
+print bagel;
