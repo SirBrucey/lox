@@ -83,3 +83,11 @@ var a = "global";
   var a = "block";
   showA();
 }
+
+class DevonshireCream {
+  serveOn() {
+    return "Scones";
+  }
+}
+
+print DevonshireCream; // Prints "DevonshireCream".

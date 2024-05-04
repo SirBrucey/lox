@@ -155,13 +155,18 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
         return lookUpVariable(expr.name, expr);
     }
 
-    private Object lookUpVariable(Token name, Expr expr) {
-        Integer distance = locals.get(expr);
-        if (distance != null) {
-            return environment.getAt(distance, name.lexeme);
-        } else {
-            return globals.get(name);
-        }
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
+
+    @Override
+    public Void visitClassStmt(Stmt.Class stmt) {
+        environment.define(stmt.name.lexeme, null);
+        LoxClass cls = new LoxClass(stmt.name.lexeme);
+        environment.assign(stmt.name, cls);
+        return null;
     }
 
     @Override
@@ -271,12 +276,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
         }
     }
 
-    @Override
-    public Void visitBlockStmt(Stmt.Block stmt) {
-        executeBlock(stmt.statements, new Environment(environment));
-        return null;
-    }
-
     private boolean isTruthy(Object object) {
         if (object == null) return false;
         if (object instanceof Boolean) return (boolean) object;
@@ -303,5 +302,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
         }
 
         return object.toString();
+    }
+
+    private Object lookUpVariable(Token name, Expr expr) {
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            return environment.getAt(distance, name.lexeme);
+        } else {
+            return globals.get(name);
+        }
     }
 }
