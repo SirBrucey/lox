@@ -104,3 +104,13 @@ print bagel;
 
 bagel.toasted = true;
 print bagel.toasted;
+
+// Class methods
+
+class Bacon {
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+
+Bacon().eat(); // Prints "Crunch crunch crunch!".
