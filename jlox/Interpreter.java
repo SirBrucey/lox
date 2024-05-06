@@ -1,9 +1,6 @@
 package jlox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
     final Environment globals = new Environment();
@@ -193,6 +190,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
 
     @Override
     public Void visitClassStmt(Stmt.Class stmt) {
+        Object superclass = null;
+        if (stmt.superclass != null) {
+            superclass = evaluate(stmt.superclass);
+
+            if (!(superclass instanceof LoxClass)) {
+                throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
+            }
+        }
         environment.define(stmt.name.lexeme, null);
 
         Map<String, LoxFunction> methods = new HashMap<>();
@@ -201,7 +206,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Object> {
             methods.put(method.name.lexeme, function);
         }
 
-        LoxClass cls = new LoxClass(stmt.name.lexeme, methods);
+        LoxClass cls = new LoxClass(stmt.name.lexeme, (LoxClass) superclass, methods);
         environment.assign(stmt.name, cls);
         return null;
     }
