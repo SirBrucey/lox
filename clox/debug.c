@@ -29,6 +29,11 @@ static int simpleInstruction(const char *name, const int offset) {
 
 int disassembleInstruction(const Chunk *chunk, const int offset) {
     printf("%04d ", offset);
+    if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+        printf("   | ");
+    } else {
+        printf("%4d ", chunk->lines[offset]);
+    }
 
     const uint8_t instruction = chunk->code[offset];
     switch (instruction) {
