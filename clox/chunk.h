@@ -6,6 +6,7 @@
 #define CHUNK_H
 
 #include "common.h"
+#include "lines.h"
 #include "value.h"
 
 typedef enum {
@@ -17,7 +18,7 @@ typedef struct {
     int count;
     int capacity;
     uint8_t *code;
-    int *lines;
+    LineCountArray lines;
     ValueArray constants;
 } Chunk;
 
@@ -26,5 +27,6 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line);
 void freeChunk(Chunk *chunk);
 
 int addConstant(Chunk *chunk, Value value);
+
 
 #endif //CHUNK_H

@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "debug.h"
+#include "lines.h"
 #include "value.h"
 
 void disassembleChunk(const Chunk *chunk, const char *name) {
@@ -28,11 +29,13 @@ static int simpleInstruction(const char *name, const int offset) {
 }
 
 int disassembleInstruction(const Chunk *chunk, const int offset) {
+    int currentLine = getLine(&chunk->lines, offset);
+
     printf("%04d ", offset);
-    if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+    if (offset > 0 && currentLine == getLine(&chunk->lines, offset - 1)) {
         printf("   | ");
     } else {
-        printf("%4d ", chunk->lines[offset]);
+        printf("%4d ", currentLine);
     }
 
     const uint8_t instruction = chunk->code[offset];
