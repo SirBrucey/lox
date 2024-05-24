@@ -13,6 +13,7 @@ typedef enum {
     OP_CONSTANT,
     OP_CONSTANT_16,
     OP_CONSTANT_24,
+    OP_NEGATE,
     OP_RETURN,
 } OpCode;
 
