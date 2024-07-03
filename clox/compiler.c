@@ -98,14 +98,19 @@ static void endCompile(void) {
     emitReturn();
 }
 
+static void expression(void) {
+
+}
+
+static void grouping() {
+    expression();
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
+}
+
 
 static void number() {
     const double value = strtod(parser.previous.start, NULL);
     emitConstant(value);
-}
-
-static void expression(void) {
-
 }
 
 bool compile(const char *source, Chunk *chunk) {
