@@ -116,7 +116,7 @@ static uint8_t mkConstant(const Value value) {
     return (uint8_t)constant;
 }
 
-void emitConstant(const double value) {
+void emitConstant(const Value value) {
     emitBytes(OP_CONSTANT, mkConstant(value));
 }
 
@@ -140,7 +140,7 @@ static void grouping(void) {
 
 static void number(void) {
     const double value = strtod(parser.previous.start, NULL);
-    emitConstant(value);
+    emitConstant(NUMBER_VAL(value));
 }
 
 static void unary(void) {
