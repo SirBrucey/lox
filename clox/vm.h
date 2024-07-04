@@ -2,8 +2,8 @@
 // Created by Brucey on 10/05/2024.
 //
 #pragma once
-#include "chunk.h";
-#include "value.h";
+#include "chunk.h"
+#include "value.h"
 
 #ifndef VM_H
 #define VM_H
