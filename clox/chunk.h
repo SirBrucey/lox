@@ -13,15 +13,24 @@ typedef enum {
     OP_CONSTANT,
     OP_CONSTANT_16,
     OP_CONSTANT_24,
+
     OP_NIL,
     OP_TRUE,
     OP_FALSE,
+
+    // FIXME: For performance it would be better to have OP_GREATER_EQUAL, OP_LESS_EQUAL.
+    OP_EQUAL,
+    OP_GREATER,
+    OP_LESS,
+
     OP_ADD,
     OP_SUBTRACT,
     OP_MULTIPLY,
     OP_DIVIDE,
+
     OP_NOT,
     OP_NEGATE,
+
     OP_RETURN,
 } OpCode;
 
