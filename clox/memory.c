@@ -23,8 +23,7 @@ void freeObject(Obj *object) {
     switch (object->type) {
         case OBJ_STRING: {
             const ObjString *string = (ObjString*)object;
-            FREE_ARRAY(char, string->chars, string->length + 1);
-            FREE(ObjString, object);
+            reallocate(object, sizeof(ObjString) + string->length + 1, 0);
             break;
         }
     }
