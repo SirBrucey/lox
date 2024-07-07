@@ -35,9 +35,11 @@ static void runtimeError(const char *fmt, ...) {
 
 void initVM() {
     resetStack();
+    vm.objects = NULL;
 }
 
 void freeVM() {
+    freeObjects();
 }
 
 void push(const Value value) {
