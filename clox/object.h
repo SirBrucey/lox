@@ -28,11 +28,11 @@ struct ObjString {
     Obj obj;
     bool ownsChars;
     int length;
-    char chars[];
     uint32_t hash;
+    char chars[];
 };
 
-ObjString *makeString(bool ownsChars, const char* chars, int length);
+ObjString *makeString(bool ownsChars, char* chars, int length);
 void printObject(Value value);
 
 static inline bool isObjType(const Value value, const ObjType type) {
