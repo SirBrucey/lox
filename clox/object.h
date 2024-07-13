@@ -29,6 +29,7 @@ struct ObjString {
     bool ownsChars;
     int length;
     char chars[];
+    uint32_t hash;
 };
 
 ObjString *makeString(bool ownsChars, const char* chars, int length);
