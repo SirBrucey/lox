@@ -26,12 +26,12 @@ struct Obj {
 
 struct ObjString {
     Obj obj;
+    bool ownsChars;
     int length;
     char chars[];
 };
 
-ObjString *makeString(const int length);
-ObjString *copyString(const char *chars, const int length);
+ObjString *makeString(bool ownsChars, const char* chars, int length);
 void printObject(Value value);
 
 static inline bool isObjType(const Value value, const ObjType type) {

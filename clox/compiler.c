@@ -144,9 +144,10 @@ static void number(void) {
 }
 
 static void string(void) {
-    emitConstant(OBJ_VAL(copyString(
-        parser.previous.start + 1,  // Strip leading "
-        parser.previous.length - 2  // Strip trailing "
+    emitConstant(OBJ_VAL(makeString(
+        false,
+        (char*)parser.previous.start + 1,
+        parser.previous.length -2
     )));
 }
 

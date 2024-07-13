@@ -23,16 +23,12 @@ static Obj *allocateObject(const size_t size, const ObjType type) {
     return object;
 }
 
-ObjString* makeString(const int length) {
+ObjString* makeString(const bool ownsChars, const char* chars, const int length) {
     ObjString* string = (ObjString*)allocateObject(
         sizeof(ObjString) + length + 1, OBJ_STRING
     );
+    string->ownsChars = ownsChars;
     string->length = length;
-    return string;
-}
-
-ObjString* copyString(const char* chars, const int length) {
-    ObjString* string = makeString(length);
 
     memcpy(string->chars, chars, length);
     string->chars[length] = '\0';
@@ -43,7 +39,7 @@ ObjString* copyString(const char* chars, const int length) {
 void printObject(const Value value) {
     switch (OBJ_TYPE(value)) {
         case OBJ_STRING: {
-            printf("%s", AS_CSTRING(value));
+            printf("%.*s", AS_STRING(value)->length, AS_CSTRING(value));
             break;
         }
     }
