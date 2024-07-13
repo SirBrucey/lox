@@ -31,6 +31,17 @@ static Entry* findEntry(Entry* entries, const int capacity, const ObjString* key
     }
 }
 
+// Mutates value with the value from the table.
+bool tableGet(const Table *table, const ObjString *key, Value *value) {
+    if (table->count == 0) return false;
+
+    const Entry* entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL) return false;
+
+    *value = entry->value;
+    return true;
+}
+
 static void adjustCapacity(Table* table, const int capacity) {
     // Create new table
     Entry* entries = ALLOCATE(Entry, capacity);
