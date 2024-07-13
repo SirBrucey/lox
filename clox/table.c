@@ -62,6 +62,7 @@ static void adjustCapacity(Table* table, const int capacity) {
     }
 
     // Copy entries to new table, using find entry to generate new indexes.
+    table->count = 0;
     for (int i = 0; i < table->capacity; i++) {
         const Entry* entry = &table->entries[i];
         if (entry->key == NULL) continue;
@@ -69,6 +70,7 @@ static void adjustCapacity(Table* table, const int capacity) {
         Entry* dest = findEntry(entries, capacity, entry->key);
         dest->key = entry->key;
         dest->value = entry->value;
+        table->count++;
     }
 
     // Free old table and move new in table.
@@ -85,7 +87,7 @@ bool tableSet(Table *table, ObjString *key, const Value value) {
 
     Entry* entry = findEntry(table->entries, table->capacity, key);
     const bool isNewKey = entry->key == NULL;
-    if (isNewKey) table->count++;
+    if (isNewKey && IS_NIL(entry->value)) table->count++;
 
     entry->key = key;
     entry->value = value;
