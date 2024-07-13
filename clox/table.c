@@ -21,9 +21,20 @@ void freeTable(Table* table) {
 
 static Entry* findEntry(Entry* entries, const int capacity, const ObjString* key) {
     uint32_t index = key->hash % capacity;
+    Entry* tombstone = NULL;
+
     for (;;) {
         Entry* entry = &entries[index];
-        if (entry->key == key || entry->key == NULL) {
+        if (entry->key == NULL) {
+            if (IS_NIL(entry->value)) {
+                // Empty entry
+                return tombstone != NULL ? tombstone : entry;
+            } else {
+                // Found tombstone
+                if (tombstone == NULL) tombstone = entry;
+            }
+        } else if (entry->key == key) {
+            // Found key
             return entry;
         }
 
@@ -79,6 +90,19 @@ bool tableSet(Table *table, ObjString *key, const Value value) {
     entry->key = key;
     entry->value = value;
     return isNewKey;
+}
+
+bool tableDelete(const Table *table, const ObjString *key) {
+    if (table->count == 0) return false;
+
+    // Find entry
+    Entry* entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL) return false;
+
+    // Place tombstone in the entry
+    entry->key = NULL;
+    entry->value = BOOL_VAL(true);
+    return true;
 }
 
 void tableAddAll(const Table* from, Table* to) {
