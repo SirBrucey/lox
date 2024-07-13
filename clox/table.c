@@ -31,9 +31,33 @@ static Entry* findEntry(Entry* entries, const int capacity, const ObjString* key
     }
 }
 
+static void adjustCapacity(Table* table, const int capacity) {
+    // Create new table
+    Entry* entries = ALLOCATE(Entry, capacity);
+    for (int i = 0; i < capacity; i++) {
+        entries[i].key = NULL;
+        entries[i].value = NIL_VAL;
+    }
+
+    // Copy entries to new table, using find entry to generate new indexes.
+    for (int i = 0; i < table->capacity; i++) {
+        const Entry* entry = &table->entries[i];
+        if (entry->key == NULL) continue;
+
+        Entry* dest = findEntry(entries, capacity, entry->key);
+        dest->key = entry->key;
+        dest->value = entry->value;
+    }
+
+    // Free old table and move new in table.
+    FREE_ARRAY(Entry, table->entries, table->capacity);
+    table->entries = entries;
+    table->capacity = capacity;
+}
+
 bool tableSet(Table *table, ObjString *key, const Value value) {
     if (table->count + 1 > table->capacity * TABLE_MAX_LOAD) {
-        int capacity = GROW_CAPACITY(table->capacity);
+        const int capacity = GROW_CAPACITY(table->capacity);
         adjustCapacity(table, capacity);
     }
 
@@ -44,4 +68,13 @@ bool tableSet(Table *table, ObjString *key, const Value value) {
     entry->key = key;
     entry->value = value;
     return isNewKey;
+}
+
+void tableAddAll(const Table* from, Table* to) {
+    for (int i = 0; i < from->capacity; i++) {
+        const Entry* entry = &from->entries[i];
+        if (entry->key != NULL) {
+            tableSet(to, entry->key, entry->value);
+        }
+    }
 }
