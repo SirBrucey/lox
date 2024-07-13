@@ -25,5 +25,6 @@ bool tableGet(const Table* table, const ObjString* key, Value* value);
 bool tableSet(Table* table, ObjString* key, Value value);
 bool tableDelete(const Table* table, const ObjString* key);
 void tableAddAll(const Table* from, Table* to);
+ObjString* tableFindString(const Table* table, const char* chars, const int length, const uint32_t hash);
 
 #endif //TABLE_H

@@ -32,7 +32,20 @@ static uint32_t hashString(const char* key, const int length) {
     return hash;
 }
 
-ObjString* makeString(const bool ownsChars, const char* chars, const int length) {
+ObjString* makeString(const bool ownsChars, char* chars, const int length) {
+    const uint32_t hash = hashString(chars, length);
+
+    ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
+    // Return reference when copying a string if its already interned.
+    if (!ownsChars && interned) {
+        return interned;
+    }
+    // If ownership is being taken and the string has been interned we can just free the string that was passed in.
+    if (ownsChars && interned != NULL) {
+        FREE_ARRAY(char, chars, length + 1);
+        return interned;
+    }
+
     ObjString* string = (ObjString*)allocateObject(
         sizeof(ObjString) + length + 1, OBJ_STRING
     );
@@ -42,8 +55,8 @@ ObjString* makeString(const bool ownsChars, const char* chars, const int length)
     memcpy(string->chars, chars, length);
     string->chars[length] = '\0';
 
-    const uint32_t hash = hashString(chars, length);
     string->hash = hash;
+    tableSet(&vm.strings, string, NIL_VAL);
 
     return string;
 }
