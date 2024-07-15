@@ -18,6 +18,8 @@ typedef enum {
     OP_TRUE,
     OP_FALSE,
 
+    OP_POP,
+
     // FIXME: For performance it would be better to have OP_GREATER_EQUAL, OP_LESS_EQUAL.
     OP_EQUAL,
     OP_GREATER,
