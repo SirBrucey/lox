@@ -20,6 +20,7 @@ typedef enum {
 
     OP_POP,
 
+    OP_GET_GLOBAL,
     OP_DEFINE_GLOBAL,
 
     // FIXME: For performance it would be better to have OP_GREATER_EQUAL, OP_LESS_EQUAL.

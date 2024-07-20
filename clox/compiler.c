@@ -176,6 +176,15 @@ static void string(void) {
     )));
 }
 
+static void namedVariable(const Token name) {
+    const uint32_t arg = identifierConstant(&name);
+    emitBytes(OP_GET_GLOBAL, arg);
+}
+
+static void variable(void) {
+    namedVariable(parser.previous);
+}
+
 static void unary(void) {
     const TokenType operatorType = parser.previous.type;
 
@@ -312,7 +321,7 @@ ParseRule rules[] = {
     [TOKEN_GREATER_EQUAL] = {NULL,     binary,   PREC_COMP},
     [TOKEN_LESS]          = {NULL,     binary,   PREC_COMP},
     [TOKEN_LESS_EQUAL]    = {NULL,     binary,   PREC_COMP},
-    [TOKEN_IDENTIFIER]    = {NULL,     NULL,   PREC_NONE},
+    [TOKEN_IDENTIFIER]    = {variable,     NULL,   PREC_NONE},
     [TOKEN_STRING]        = {string,     NULL,   PREC_NONE},
     [TOKEN_NUMBER]        = {number,   NULL,   PREC_NONE},
     [TOKEN_AND]           = {NULL,     NULL,   PREC_NONE},
