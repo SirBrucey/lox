@@ -136,6 +136,16 @@ static InterpretResult run() {
                 push(value);
                 break;
             }
+            case OP_SET_GLOBAL: {
+                ObjString* name = READ_STRING();
+                const Value value = OBJ_VAL(name);
+                if (tableSet(&vm.globals, value, peek(0))) {
+                    tableDelete(&vm.globals, value);
+                    runtimeError("Undefined variable '%s'.", name->chars);
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                break;
+            }
             case OP_DEFINE_GLOBAL: {
                 ObjString* name = READ_STRING();
                 tableSet(&vm.globals, OBJ_VAL(name), peek(0));
