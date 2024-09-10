@@ -290,6 +290,15 @@ static void defineVariable(const uint8_t global) {
     emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
+static void and_(const bool canAssign) {
+    const int endJump = emitJump(OP_JUMP_IF_FALSE);
+
+    emitByte(OP_POP);
+    parsePrecedence(PREC_AND);
+
+    patchJump(endJump);
+}
+
 static void grouping(const bool canAssign) {
     expression();
     consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
@@ -298,6 +307,18 @@ static void grouping(const bool canAssign) {
 static void number(const bool canAssign) {
     const double value = strtod(parser.previous.start, NULL);
     emitConstant(NUMBER_VAL(value));
+}
+
+// FIXME: This emits more instructions than necessary, it may be worth adding an OP_JUMP_IF_TRUE.
+static void or_(const bool canAssign) {
+    const int elseJump = emitJump(OP_JUMP_IF_FALSE);
+    const int endJump = emitJump(OP_JUMP);
+
+    patchJump(elseJump);
+    emitByte(OP_POP);
+
+    parsePrecedence(PREC_OR);
+    patchJump(endJump);
 }
 
 static void string(const bool canAssign) {
@@ -504,7 +525,7 @@ ParseRule rules[] = {
     [TOKEN_IDENTIFIER]    = {variable,     NULL,   PREC_NONE},
     [TOKEN_STRING]        = {string,     NULL,   PREC_NONE},
     [TOKEN_NUMBER]        = {number,   NULL,   PREC_NONE},
-    [TOKEN_AND]           = {NULL,     NULL,   PREC_NONE},
+    [TOKEN_AND]           = {NULL,     and_,   PREC_AND},
     [TOKEN_CLASS]         = {NULL,     NULL,   PREC_NONE},
     [TOKEN_ELSE]          = {NULL,     NULL,   PREC_NONE},
     [TOKEN_FALSE]         = {literal,     NULL,   PREC_NONE},
@@ -512,7 +533,7 @@ ParseRule rules[] = {
     [TOKEN_FUN]           = {NULL,     NULL,   PREC_NONE},
     [TOKEN_IF]            = {NULL,     NULL,   PREC_NONE},
     [TOKEN_NIL]           = {literal,     NULL,   PREC_NONE},
-    [TOKEN_OR]            = {NULL,     NULL,   PREC_NONE},
+    [TOKEN_OR]            = {NULL,     or_,   PREC_OR},
     [TOKEN_PRINT]         = {NULL,     NULL,   PREC_NONE},
     [TOKEN_RETURN]        = {NULL,     NULL,   PREC_NONE},
     [TOKEN_SUPER]         = {NULL,     NULL,   PREC_NONE},
