@@ -13,6 +13,8 @@
 #include "debug.h"
 #endif
 
+#define UINT8_COUNT (UINT8_MAX + 1)
+
 typedef struct {
     Token current;
     Token previous;
@@ -42,7 +44,20 @@ typedef struct {
     Precedence precedence;
 } ParseRule;
 
+typedef struct {
+    Token name;
+    int depth;
+} Local;
+
+typedef struct {
+    Local locals[UINT8_COUNT];
+    int localCount;
+    int scopeDepth;
+} Compiler;
+
+
 Parser parser;
+Compiler* current = NULL;
 Chunk *compilingChunk;
 Table stringConstants;
 
@@ -129,6 +144,12 @@ static uint8_t mkConstant(const Value value) {
 
 void emitConstant(const Value value) {
     emitBytes(OP_CONSTANT, mkConstant(value));
+}
+
+static void initCompiler(Compiler* compiler) {
+    compiler->localCount = 0;
+    compiler->scopeDepth = 0;
+    current = compiler;
 }
 
 static void endCompile(void) {
@@ -388,6 +409,8 @@ static void parsePrecedence(Precedence precedence) {
 
 bool compile(const char *source, Chunk *chunk) {
     initScanner(source);
+    Compiler compiler;
+    initCompiler(&compiler);
 
     compilingChunk = chunk;
     parser.hadError = false;
