@@ -32,6 +32,14 @@ static uint32_t hashString(const char* key, const int length) {
     return hash;
 }
 
+ObjFunction* newFunction() {
+    ObjFunction* function = ALLOCATE_OBJ(ObjFunction, OBJ_FUNCTION);
+    function->arity = 0;
+    function->name = NULL;
+    initChunk(&function->chunk);
+    return function;
+}
+
 ObjString* makeString(const bool ownsChars, char* chars, const int length) {
     const uint32_t hash = hashString(chars, length);
 
@@ -61,8 +69,16 @@ ObjString* makeString(const bool ownsChars, char* chars, const int length) {
     return string;
 }
 
+static void printFunction(const ObjFunction* function) {
+    printf("<fn %s>", function->name->chars);
+}
+
 void printObject(const Value value) {
     switch (OBJ_TYPE(value)) {
+        case OBJ_FUNCTION: {
+            printFunction(AS_FUNCTION(value));
+            break;
+        }
         case OBJ_STRING: {
             printf("%.*s", AS_STRING(value)->length, AS_CSTRING(value));
             break;
