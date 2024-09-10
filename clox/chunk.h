@@ -19,7 +19,10 @@ typedef enum {
     OP_FALSE,
 
     OP_POP,
+    // FIXME: Add OP_POPN to optimize multiple pop operations.
 
+    OP_GET_LOCAL,
+    OP_SET_LOCAL,
     OP_GET_GLOBAL,
     OP_SET_GLOBAL,
     OP_DEFINE_GLOBAL,
