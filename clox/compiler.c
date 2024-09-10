@@ -161,6 +161,14 @@ static void endCompile(void) {
 #endif
 }
 
+static void beginScope() {
+    current->scopeDepth++;
+}
+
+static void endScope() {
+    current->scopeDepth--;
+}
+
 static void expression();
 static void statement();
 static void declaration();
@@ -271,6 +279,14 @@ static void expression(void) {
     parsePrecedence(PREC_ASSIGN);
 }
 
+static void block() {
+    while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
+        declaration();
+    }
+
+    consume(TOKEN_RIGHT_BRACE, "Expect '}' after block");
+}
+
 static void varDeclaration(void) {
     uint8_t global = parseVariable("Expect variable name.");
 
@@ -333,6 +349,10 @@ static void declaration(void) {
 static void statement(void) {
     if (match(TOKEN_PRINT)) {
         printStatement();
+    } else if (match(TOKEN_LEFT_BRACE)) {
+        beginScope();
+        block();
+        endScope();
     } else {
         expressionStatement();
     }
